@@ -1,54 +1,66 @@
 package com.mycompany.wedplanmanager;
 
-public class PaketIndoor extends PaketPernikahan {
+public class PaketIndoor extends PaketPernikahan
+        implements DapatDipesan, DapatDibayar {
 
     private int kapasitasGedung;
-    private int jumlahUnitAC;
+    private int jumlahAC;
 
     public PaketIndoor(
             String namaPaket,
             String kodePaket,
             double hargaDasar,
             int kapasitasGedung,
-            int jumlahUnitAC) {
+            int jumlahAC) {
 
         super(namaPaket, kodePaket, hargaDasar);
-
         this.kapasitasGedung = kapasitasGedung;
-        this.jumlahUnitAC = jumlahUnitAC;
+        this.jumlahAC = jumlahAC;
     }
 
     public int getKapasitasGedung() {
-        return this.kapasitasGedung;
+        return kapasitasGedung;
     }
 
     public void setKapasitasGedung(int kapasitasGedung) {
-        if (kapasitasGedung > 0) {
-            this.kapasitasGedung = kapasitasGedung;
-        } else {
-            System.out.println("Kapasitas harus lebih dari 0.");
-        }
+        this.kapasitasGedung = kapasitasGedung;
     }
 
-    public int getJumlahUnitAC() {
-        return this.jumlahUnitAC;
+    public int getJumlahAC() {
+        return jumlahAC;
     }
 
-    public void setJumlahUnitAC(int jumlahUnitAC) {
-        if (jumlahUnitAC >= 0) {
-            this.jumlahUnitAC = jumlahUnitAC;
-        } else {
-            System.out.println("Jumlah AC tidak boleh negatif.");
-        }
+    public void setJumlahAC(int jumlahAC) {
+        this.jumlahAC = jumlahAC;
+    }
+
+    @Override
+    public String getJenisLokasi() {
+        return "Indoor";
     }
 
     @Override
     public void tampilkanInfo() {
-
         super.tampilkanInfo();
+        System.out.println("Jenis Lokasi     : " + getJenisLokasi());
+        System.out.println("Kapasitas Gedung : " + kapasitasGedung + " orang");
+        System.out.println("Jumlah AC        : " + jumlahAC + " unit");
+    }
 
-        System.out.println("Jenis Lokasi : Indoor");
-        System.out.println("Kapasitas    : " + kapasitasGedung + " orang");
-        System.out.println("Jumlah AC    : " + jumlahUnitAC + " unit");
+    @Override
+    public void pesanPaket() {
+        System.out.println(
+                "Paket Indoor " + getNamaPaket()
+                + " berhasil dipesan."
+        );
+    }
+
+    @Override
+    public void prosesPembayaran() {
+        System.out.println("Pembayaran paket Indoor berhasil diproses.");
+        System.out.printf(
+                "Total pembayaran: Rp%,.0f%n",
+                getHargaDasar()
+        );
     }
 }

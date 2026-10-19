@@ -1,57 +1,66 @@
 package com.mycompany.wedplanmanager;
 
-public class PaketOutdoor extends PaketPernikahan {
+public class PaketOutdoor extends PaketPernikahan
+        implements DapatDipesan, DapatDibayar {
 
-    private double luasAreaMeter;
-    private String jenisTendaDarurat;
+    private double luasArea;
+    private String jenisTenda;
 
     public PaketOutdoor(
             String namaPaket,
             String kodePaket,
             double hargaDasar,
-            double luasAreaMeter,
-            String jenisTendaDarurat) {
+            double luasArea,
+            String jenisTenda) {
 
         super(namaPaket, kodePaket, hargaDasar);
-
-        this.luasAreaMeter = luasAreaMeter;
-        this.jenisTendaDarurat = jenisTendaDarurat;
+        this.luasArea = luasArea;
+        this.jenisTenda = jenisTenda;
     }
 
-    public double getLuasAreaMeter() {
-        return this.luasAreaMeter;
+    public double getLuasArea() {
+        return luasArea;
     }
 
-    public void setLuasAreaMeter(double luasAreaMeter) {
-        if (luasAreaMeter > 0) {
-            this.luasAreaMeter = luasAreaMeter;
-        } else {
-            System.out.println("Luas area harus lebih dari 0.");
-        }
+    public void setLuasArea(double luasArea) {
+        this.luasArea = luasArea;
     }
 
-    public String getJenisTendaDarurat() {
-        return this.jenisTendaDarurat;
+    public String getJenisTenda() {
+        return jenisTenda;
     }
 
-    public void setJenisTendaDarurat(String jenisTendaDarurat) {
-        if (jenisTendaDarurat != null &&
-            !jenisTendaDarurat.trim().isEmpty()) {
+    public void setJenisTenda(String jenisTenda) {
+        this.jenisTenda = jenisTenda;
+    }
 
-            this.jenisTendaDarurat = jenisTendaDarurat;
-
-        } else {
-            System.out.println("Jenis tenda tidak boleh kosong.");
-        }
+    @Override
+    public String getJenisLokasi() {
+        return "Outdoor";
     }
 
     @Override
     public void tampilkanInfo() {
-
         super.tampilkanInfo();
+        System.out.println("Jenis Lokasi : " + getJenisLokasi());
+        System.out.println("Luas Area    : " + luasArea + " m2");
+        System.out.println("Jenis Tenda  : " + jenisTenda);
+    }
 
-        System.out.println("Jenis Lokasi : Outdoor");
-        System.out.println("Luas Area    : " + luasAreaMeter + " m2");
-        System.out.println("Tenda Darurat: " + jenisTendaDarurat);
+    @Override
+    public void pesanPaket() {
+        System.out.println(
+                "Paket Outdoor " + getNamaPaket()
+                + " berhasil dipesan."
+        );
+    }
+
+    @Override
+    public void prosesPembayaran() {
+        System.out.println("Pembayaran paket Outdoor berhasil diproses.");
+        System.out.printf(
+                "Total pembayaran: Rp%,.0f%n",
+                getHargaDasar()
+        );
     }
 }

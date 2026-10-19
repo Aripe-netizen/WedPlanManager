@@ -1,6 +1,8 @@
+
 package com.mycompany.wedplanmanager;
 
-public class PaketSemiOutdoor extends PaketPernikahan {
+public class PaketSemiOutdoor extends PaketPernikahan
+        implements DapatDipesan, DapatDibayar {
 
     private int kapasitasArea;
     private String jenisKanopi;
@@ -13,60 +15,55 @@ public class PaketSemiOutdoor extends PaketPernikahan {
             String jenisKanopi) {
 
         super(namaPaket, kodePaket, hargaDasar);
-
         this.kapasitasArea = kapasitasArea;
         this.jenisKanopi = jenisKanopi;
     }
 
     public int getKapasitasArea() {
-        return this.kapasitasArea;
+        return kapasitasArea;
     }
 
     public void setKapasitasArea(int kapasitasArea) {
-
-        if (kapasitasArea > 0) {
-            this.kapasitasArea = kapasitasArea;
-        } else {
-            System.out.println(
-                    "Kapasitas area harus lebih dari 0."
-            );
-        }
+        this.kapasitasArea = kapasitasArea;
     }
 
     public String getJenisKanopi() {
-        return this.jenisKanopi;
+        return jenisKanopi;
     }
 
     public void setJenisKanopi(String jenisKanopi) {
+        this.jenisKanopi = jenisKanopi;
+    }
 
-        if (jenisKanopi != null &&
-                !jenisKanopi.trim().isEmpty()) {
-
-            this.jenisKanopi = jenisKanopi;
-        } else {
-            System.out.println(
-                    "Jenis kanopi tidak boleh kosong."
-            );
-        }
+    @Override
+    public String getJenisLokasi() {
+        return "Semi Outdoor";
     }
 
     @Override
     public void tampilkanInfo() {
-
         super.tampilkanInfo();
+        System.out.println("Jenis Lokasi   : " + getJenisLokasi());
+        System.out.println("Kapasitas Area : " + kapasitasArea + " orang");
+        System.out.println("Jenis Kanopi   : " + jenisKanopi);
+    }
 
+    @Override
+    public void pesanPaket() {
         System.out.println(
-                "Jenis Lokasi : Semi Outdoor"
+                "Paket Semi Outdoor " + getNamaPaket()
+                + " berhasil dipesan."
         );
+    }
 
+    @Override
+    public void prosesPembayaran() {
         System.out.println(
-                "Kapasitas Area : "
-                + kapasitasArea + " orang"
+                "Pembayaran paket Semi Outdoor berhasil diproses."
         );
-
-        System.out.println(
-                "Jenis Kanopi : "
-                + jenisKanopi
+        System.out.printf(
+                "Total pembayaran: Rp%,.0f%n",
+                getHargaDasar()
         );
     }
 }
