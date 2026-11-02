@@ -1,68 +1,113 @@
 
 package com.mycompany.wedplanmanager;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class WedPlanManager {
 
     static Scanner input = new Scanner(System.in);
-    static PaketPernikahan[] daftarPaket =
-            new PaketPernikahan[100];
-    static int jumlahPaket = 0;
+
+    // ARRAYLIST UNTUK MENYIMPAN PAKET
+    static ArrayList<PaketPernikahan> daftarPaket =
+            new ArrayList<>();
+
+    // HASHMAP UNTUK MENYIMPAN DATA PELANGGAN
+    static HashMap<String, String> dataPelanggan =
+            new HashMap<>();
 
     public static void main(String[] args) {
 
         tambahDataAwal();
+        tambahPelangganAwal();
 
-        int pilihan;
+        boolean berjalan = true;
 
-        do {
-            tampilkanMenu();
+        try {
+            while (berjalan) {
 
-            System.out.print("Pilih menu: ");
-            pilihan = input.nextInt();
-            input.nextLine();
+                tampilkanMenu();
 
-            switch (pilihan) {
-                case 1:
-                    tambahPaket();
-                    break;
-                case 2:
-                    tampilkanSemuaPaket();
-                    break;
-                case 3:
-                    menuCariPaket();
-                    break;
-                case 4:
-                    prosesPaket();
-                    break;
-                case 5:
-                    System.out.println(
-                            "Total paket: "
-                            + PaketPernikahan.getTotalPaket()
-                    );
-                    break;
-                case 6:
-                    pesanPaket();
-                    break;
-                case 7:
-                    prosesPembayaran();
-                    break;
-                case 0:
-                    System.out.println(
-                            "Terima kasih telah menggunakan WedPlan Manager!"
-                    );
-                    break;
-                default:
-                    System.out.println("Pilihan tidak valid.");
+                System.out.print("Pilih menu: ");
+                int pilihan = input.nextInt();
+                input.nextLine();
+
+                switch (pilihan) {
+
+                    case 1:
+                        tambahPaket();
+                        break;
+
+                    case 2:
+                        tampilkanSemuaPaket();
+                        break;
+
+                    case 3:
+                        menuCariPaket();
+                        break;
+
+                    case 4:
+                        prosesPaket();
+                        break;
+
+                    case 5:
+                        System.out.println(
+                                "Total paket: " + daftarPaket.size()
+                        );
+                        break;
+
+                    case 6:
+                        pesanPaket();
+                        break;
+
+                    case 7:
+                        prosesPembayaran();
+                        break;
+
+                    case 8:
+                        kelolaPelanggan();
+                        break;
+
+                    case 0:
+                        berjalan = false;
+                        System.out.println(
+                                "Terima kasih telah menggunakan WedPlan Manager!"
+                        );
+                        break;
+
+                    default:
+                        System.out.println("Pilihan tidak valid.");
+                }
             }
 
-        } while (pilihan != 0);
+        } catch (InputMismatchException e) {
 
-        input.close();
+            System.out.println(
+                    "ERROR: Input tidak valid! Masukkan angka."
+            );
+
+        } catch (Exception e) {
+
+            System.out.println(
+                    "ERROR: " + e.getMessage()
+            );
+
+        } finally {
+
+            System.out.println(
+                    "Blok finally: Program selesai dijalankan."
+            );
+
+            input.close();
+        }
     }
 
+    // MENU UTAMA
+
     public static void tampilkanMenu() {
+
         System.out.println("\n======================================");
         System.out.println("          WEDPLAN MANAGER");
         System.out.println("     Wedding Event Organizer");
@@ -74,16 +119,16 @@ public class WedPlanManager {
         System.out.println("5. Lihat Total Paket");
         System.out.println("6. Pesan Paket");
         System.out.println("7. Proses Pembayaran");
+        System.out.println("8. Kelola Data Pelanggan");
         System.out.println("0. Keluar");
         System.out.println("======================================");
     }
 
+    // TAMBAH PAKET
+
     public static void tambahPaket() {
 
-        if (jumlahPaket >= daftarPaket.length) {
-            System.out.println("Penyimpanan paket penuh.");
-            return;
-        }
+        System.out.println("\n========== TAMBAH PAKET ==========");
 
         System.out.print("Nama Paket  : ");
         String nama = input.nextLine();
@@ -94,7 +139,12 @@ public class WedPlanManager {
         System.out.print("Harga Dasar : Rp");
         double harga = input.nextDouble();
 
-        System.out.println("1. Indoor");
+        if (harga <= 0) {
+            System.out.println("Harga harus lebih dari 0.");
+            return;
+        }
+
+        System.out.println("\n1. Indoor");
         System.out.println("2. Outdoor");
         System.out.println("3. Semi Outdoor");
         System.out.print("Pilih lokasi: ");
@@ -103,6 +153,7 @@ public class WedPlanManager {
         input.nextLine();
 
         if (jenis == 1) {
+
             System.out.print("Kapasitas Gedung : ");
             int kapasitas = input.nextInt();
 
@@ -110,12 +161,14 @@ public class WedPlanManager {
             int ac = input.nextInt();
             input.nextLine();
 
-            daftarPaket[jumlahPaket++] =
+            daftarPaket.add(
                     new PaketIndoor(
                             nama, kode, harga, kapasitas, ac
-                    );
+                    )
+            );
 
         } else if (jenis == 2) {
+
             System.out.print("Luas Area (m2) : ");
             double luas = input.nextDouble();
             input.nextLine();
@@ -123,12 +176,14 @@ public class WedPlanManager {
             System.out.print("Jenis Tenda    : ");
             String tenda = input.nextLine();
 
-            daftarPaket[jumlahPaket++] =
+            daftarPaket.add(
                     new PaketOutdoor(
                             nama, kode, harga, luas, tenda
-                    );
+                    )
+            );
 
         } else if (jenis == 3) {
+
             System.out.print("Kapasitas Area : ");
             int kapasitas = input.nextInt();
             input.nextLine();
@@ -136,12 +191,14 @@ public class WedPlanManager {
             System.out.print("Jenis Kanopi   : ");
             String kanopi = input.nextLine();
 
-            daftarPaket[jumlahPaket++] =
+            daftarPaket.add(
                     new PaketSemiOutdoor(
                             nama, kode, harga, kapasitas, kanopi
-                    );
+                    )
+            );
 
         } else {
+
             System.out.println("Jenis lokasi tidak valid.");
             return;
         }
@@ -149,50 +206,69 @@ public class WedPlanManager {
         System.out.println("Paket berhasil ditambahkan.");
     }
 
+    // TAMPILKAN SEMUA PAKET
+
     public static void tampilkanSemuaPaket() {
 
-        if (jumlahPaket == 0) {
+        System.out.println("\n========== DAFTAR PAKET ==========");
+
+        if (daftarPaket.isEmpty()) {
             System.out.println("Belum ada paket.");
             return;
         }
 
-        for (int i = 0; i < jumlahPaket; i++) {
+        for (int i = 0; i < daftarPaket.size(); i++) {
+
             System.out.println("\n========== PAKET " + (i + 1) + " ==========");
-            daftarPaket[i].tampilkanInfo();
+
+            daftarPaket.get(i).tampilkanInfo();
         }
+
+        System.out.println(
+                "\nTotal paket: " + daftarPaket.size()
+        );
     }
 
-    // PENCARIAN BERDASARKAN NAMA ATAU KODE
+    // PENCARIAN PAKET DENGAN THROW DAN THROWS
 
-    public static void cariPaket(String keyword) {
+    public static void cariPaket(String keyword)
+            throws PaketTidakDitemukanException {
 
         boolean ditemukan = false;
 
-        for (int i = 0; i < jumlahPaket; i++) {
-            if (daftarPaket[i].getNamaPaket()
-                    .equalsIgnoreCase(keyword)
-                    || daftarPaket[i].getKodePaket()
-                    .equalsIgnoreCase(keyword)) {
+        for (int i = 0; i < daftarPaket.size(); i++) {
 
-                daftarPaket[i].tampilkanInfo();
+            PaketPernikahan paket = daftarPaket.get(i);
+
+            if (paket.getNamaPaket().equalsIgnoreCase(keyword)
+                    || paket.getKodePaket().equalsIgnoreCase(keyword)) {
+
+                paket.tampilkanInfo();
                 ditemukan = true;
             }
         }
 
         if (!ditemukan) {
-            System.out.println("Paket tidak ditemukan.");
+
+            throw new PaketTidakDitemukanException(
+                    "Paket dengan nama atau kode tersebut tidak ditemukan!"
+            );
         }
     }
 
-    // PENCARIAN BERDASARKAN HARGA MAKSIMAL
+    // PENCARIAN BERDASARKAN HARGA
 
     public static void cariPaket(double hargaMaksimal) {
 
         boolean ditemukan = false;
 
-        for (int i = 0; i < jumlahPaket; i++) {
-            if (daftarPaket[i].getHargaDasar() <= hargaMaksimal) {
-                daftarPaket[i].tampilkanInfo();
+        for (int i = 0; i < daftarPaket.size(); i++) {
+
+            PaketPernikahan paket = daftarPaket.get(i);
+
+            if (paket.getHargaDasar() <= hargaMaksimal) {
+
+                paket.tampilkanInfo();
                 ditemukan = true;
             }
         }
@@ -202,40 +278,64 @@ public class WedPlanManager {
         }
     }
 
+    // MENU PENCARIAN
+
     public static void menuCariPaket() {
 
-        System.out.println("1. Cari nama/kode");
-        System.out.println("2. Cari harga maksimal");
+        System.out.println("\n1. Cari berdasarkan nama/kode");
+        System.out.println("2. Cari berdasarkan harga maksimal");
         System.out.print("Pilihan: ");
 
         int pilihan = input.nextInt();
         input.nextLine();
 
         if (pilihan == 1) {
+
             System.out.print("Masukkan nama/kode: ");
-            cariPaket(input.nextLine());
+            String keyword = input.nextLine();
+
+            try {
+
+                cariPaket(keyword);
+
+            } catch (PaketTidakDitemukanException e) {
+
+                System.out.println(
+                        "ERROR: " + e.getMessage()
+                );
+
+            } finally {
+
+                System.out.println(
+                        "Pencarian paket selesai."
+                );
+            }
 
         } else if (pilihan == 2) {
+
             System.out.print("Harga maksimal: Rp");
             double harga = input.nextDouble();
             input.nextLine();
+
             cariPaket(harga);
 
         } else {
+
             System.out.println("Pilihan tidak valid.");
         }
     }
 
-    // POLYMORPHISM
+    // PROSES PAKET
 
     public static void prosesPaket(PaketPernikahan paket) {
+
         paket.tampilkanInfo();
         System.out.println("Paket berhasil diproses.");
     }
 
     public static void prosesPaket() {
 
-        if (jumlahPaket == 0) {
+        if (daftarPaket.isEmpty()) {
             System.out.println("Belum ada paket.");
             return;
         }
@@ -246,18 +346,21 @@ public class WedPlanManager {
         int nomor = input.nextInt();
         input.nextLine();
 
-        if (nomor >= 1 && nomor <= jumlahPaket) {
-            prosesPaket(daftarPaket[nomor - 1]);
+        if (nomor >= 1 && nomor <= daftarPaket.size()) {
+
+            prosesPaket(daftarPaket.get(nomor - 1));
+
         } else {
+
             System.out.println("Nomor paket tidak valid.");
         }
     }
 
-    // INTERFACE: PEMESANAN
+    // PEMESANAN MENGGUNAKAN INTERFACE
 
     public static void pesanPaket() {
 
-        if (jumlahPaket == 0) {
+        if (daftarPaket.isEmpty()) {
             System.out.println("Belum ada paket.");
             return;
         }
@@ -268,30 +371,31 @@ public class WedPlanManager {
         int nomor = input.nextInt();
         input.nextLine();
 
-        if (nomor < 1 || nomor > jumlahPaket) {
+        if (nomor < 1 || nomor > daftarPaket.size()) {
             System.out.println("Nomor paket tidak valid.");
             return;
         }
 
-        PaketPernikahan paket = daftarPaket[nomor - 1];
-
-        System.out.println(
-                "Lokasi paket: " + paket.getJenisLokasi()
-        );
+        PaketPernikahan paket = daftarPaket.get(nomor - 1);
 
         if (paket instanceof DapatDipesan) {
+
             DapatDipesan pemesanan = (DapatDipesan) paket;
             pemesanan.pesanPaket();
+
         } else {
-            System.out.println("Paket tidak mendukung pemesanan.");
+
+            System.out.println(
+                    "Paket tidak mendukung pemesanan."
+            );
         }
     }
 
-    // INTERFACE: PEMBAYARAN
+    // PEMBAYARAN MENGGUNAKAN INTERFACE
 
     public static void prosesPembayaran() {
 
-        if (jumlahPaket == 0) {
+        if (daftarPaket.isEmpty()) {
             System.out.println("Belum ada paket.");
             return;
         }
@@ -302,53 +406,159 @@ public class WedPlanManager {
         int nomor = input.nextInt();
         input.nextLine();
 
-        if (nomor < 1 || nomor > jumlahPaket) {
+        if (nomor < 1 || nomor > daftarPaket.size()) {
             System.out.println("Nomor paket tidak valid.");
             return;
         }
 
-        PaketPernikahan paket = daftarPaket[nomor - 1];
+        PaketPernikahan paket = daftarPaket.get(nomor - 1);
 
         if (paket instanceof DapatDibayar) {
+
             DapatDibayar pembayaran = (DapatDibayar) paket;
             pembayaran.prosesPembayaran();
+
         } else {
-            System.out.println("Paket tidak mendukung pembayaran.");
+
+            System.out.println(
+                    "Paket tidak mendukung pembayaran."
+            );
         }
     }
 
-    // LIMA DATA PAKET AWAL
+    // DATA AWAL PAKET: ARRAYLIST
 
     public static void tambahDataAwal() {
 
-        daftarPaket[jumlahPaket++] =
+        daftarPaket.add(
                 new PaketIndoor(
                         "Royal Indoor", "IND001",
                         25000000, 500, 20
-                );
+                )
+        );
 
-        daftarPaket[jumlahPaket++] =
+        daftarPaket.add(
                 new PaketIndoor(
                         "Elegant Ballroom", "IND002",
                         35000000, 800, 30
-                );
+                )
+        );
 
-        daftarPaket[jumlahPaket++] =
+        daftarPaket.add(
                 new PaketOutdoor(
                         "Garden Romance", "OUT001",
                         20000000, 1000, "Tenda Dome"
-                );
+                )
+        );
 
-        daftarPaket[jumlahPaket++] =
+        daftarPaket.add(
                 new PaketOutdoor(
                         "Beach Wedding", "OUT002",
                         30000000, 1500, "Tenda Transparan"
-                );
+                )
+        );
 
-        daftarPaket[jumlahPaket++] =
+        daftarPaket.add(
                 new PaketSemiOutdoor(
                         "Sunset Garden", "SEM001",
                         28000000, 600, "Kanopi Transparan"
+                )
+        );
+    }
+
+    // DATA AWAL PELANGGAN: HASHMAP
+
+    public static void tambahPelangganAwal() {
+
+        dataPelanggan.put("PLG001", "Andi Saputra");
+        dataPelanggan.put("PLG002", "Budi Santoso");
+        dataPelanggan.put("PLG003", "Citra Amelia");
+    }
+
+    // MENU KELOLA PELANGGAN
+
+    public static void kelolaPelanggan() {
+
+        System.out.println("\n========== KELOLA PELANGGAN ==========");
+        System.out.println("1. Tambah Pelanggan");
+        System.out.println("2. Cari Pelanggan");
+        System.out.println("3. Tampilkan Semua Pelanggan");
+        System.out.print("Pilihan: ");
+
+        int pilihan = input.nextInt();
+        input.nextLine();
+
+        if (pilihan == 1) {
+
+            System.out.print("Masukkan ID Pelanggan: ");
+            String id = input.nextLine();
+
+            if (id.trim().isEmpty()) {
+                System.out.println("ID tidak boleh kosong.");
+                return;
+            }
+
+            if (dataPelanggan.containsKey(id)) {
+                System.out.println("ID pelanggan sudah terdaftar.");
+                return;
+            }
+
+            System.out.print("Masukkan Nama Pelanggan: ");
+            String nama = input.nextLine();
+
+            if (nama.trim().isEmpty()) {
+                System.out.println("Nama tidak boleh kosong.");
+                return;
+            }
+
+            dataPelanggan.put(id, nama);
+
+            System.out.println(
+                    "Pelanggan berhasil ditambahkan."
+            );
+
+        } else if (pilihan == 2) {
+
+            System.out.print("Masukkan ID yang dicari: ");
+            String id = input.nextLine();
+
+            if (dataPelanggan.containsKey(id)) {
+
+                System.out.println(
+                        "Nama Pelanggan: " + dataPelanggan.get(id)
                 );
+
+            } else {
+
+                System.out.println(
+                        "Pelanggan dengan ID tersebut tidak ditemukan."
+                );
+            }
+
+        } else if (pilihan == 3) {
+
+            System.out.println("\n========== DAFTAR PELANGGAN ==========");
+
+            if (dataPelanggan.isEmpty()) {
+                System.out.println("Belum ada pelanggan.");
+                return;
+            }
+
+            System.out.println(
+                    "Total Pelanggan: " + dataPelanggan.size()
+            );
+
+            for (String id : dataPelanggan.keySet()) {
+
+                System.out.println(
+                        "ID: " + id
+                        + " | Nama: " + dataPelanggan.get(id)
+                );
+            }
+
+        } else {
+
+            System.out.println("Pilihan tidak valid.");
+        }
     }
 }
