@@ -1,18 +1,18 @@
+
 package com.mycompany.wedplanmanager;
 
-public abstract class PaketPernikahan {
+import java.io.Serializable;
+
+public abstract class PaketPernikahan implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String namaPaket;
     private String kodePaket;
     private double hargaDasar;
-
     private static int totalPaket = 0;
 
-    public PaketPernikahan(
-            String namaPaket,
-            String kodePaket,
-            double hargaDasar) {
-
+    public PaketPernikahan(String namaPaket, String kodePaket, double hargaDasar) {
         this.namaPaket = namaPaket;
         this.kodePaket = kodePaket;
         this.hargaDasar = hargaDasar;
@@ -50,10 +50,7 @@ public abstract class PaketPernikahan {
     public void tampilkanInfo() {
         System.out.println("Nama Paket  : " + namaPaket);
         System.out.println("Kode Paket  : " + kodePaket);
-        System.out.printf(
-                "Harga Dasar : Rp%,.0f%n",
-                hargaDasar
-        );
+        System.out.println("Harga Dasar : Rp" + hargaDasar);
     }
 
     public abstract String getJenisLokasi();
